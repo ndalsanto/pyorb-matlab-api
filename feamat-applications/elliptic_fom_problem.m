@@ -209,6 +209,15 @@ classdef elliptic_fom_problem < matlab_fom_problem
             array = assemble_elliptic_fom_rhs( obj, param, varargin{1}, varargin{2} );
         end
     end
+    
+    function [elements] = find_mdeim_elements_fom_specifics( obj, indices_mat )
+        elements= find_elements_given_matrix_indices( obj.fespace, obj.fespace, indices_mat );
+    end
+    
+    function elements = find_elements_for_deim_fom_specifics( obj, indices )
+       elements = find_elements_given_vector_indices( obj.fespace, indices ); 
+    end
+        
   end
 end
 
