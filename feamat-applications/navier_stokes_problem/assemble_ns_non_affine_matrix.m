@@ -14,9 +14,6 @@ function [array] = assemble_ns_non_affine_matrix( navier_stokes_fom_problem, par
     ccc = build_obstruction_function( );
     cc = @(x) ccc(x, param);
 
-    disp('assemble_ns_non_affine_matrix --- assemble_ns_non_affine_matrix')
-    disp(nargin)
-    
     if nargin == 2
         M_scalar = assemble_cu( cc, navier_stokes_fom_problem.fespace_u );
         M_scalar = apply_dirichlet_bc_matrix(M_scalar, navier_stokes_fom_problem.fespace_u, 0);
@@ -29,7 +26,6 @@ function [array] = assemble_ns_non_affine_matrix( navier_stokes_fom_problem, par
         return
     end
 
-    disp( 'Accessing subelements ' )
     M_scalar = assemble_cu_elementlist( cc, navier_stokes_fom_problem.fespace_u, varargin{1} );
     M_scalar = apply_dirichlet_bc_matrix(M_scalar, navier_stokes_fom_problem.fespace_u, 0);
     M = [M_scalar, sparse( n_nodes_u, n_nodes_u ); ...
@@ -49,8 +45,8 @@ function [array] = assemble_ns_non_affine_matrix( navier_stokes_fom_problem, par
     else
         [ i, j, val ] = find( M );
         array.A = [ i, j, val ];
+        return
     end
-%     end
     
 end
 
