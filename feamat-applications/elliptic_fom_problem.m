@@ -82,7 +82,87 @@ classdef elliptic_fom_problem < matlab_fom_problem
 
             return 
         end
-    end
+      end
+      
+      function [array] = build_fom_affine_components( obj, operator )
+
+        considered_model = obj.fem_specifics.model;
+
+        if ( strcmp( operator, 'f' ) == 0 ) && ( strcmp( considered_model, 'thermal_block' ) == 0 && strcmp( considered_model, 'elliptic_example' ) == 0 )
+            error('This operator for the chosen model is not supported');
+        end
+
+        trivial_parameter = zeros( 10 );
+        [f, dirichlet_functions, neumann_functions] = build_source_and_bc( trivial_parameter, considered_model );
+        
+        if strcmp( 'thermal_block', considered_model )
+
+            if operator == 'A'
+
+                mu = @(x) (x(1,:)<0.5).*(x(2,:)<0.5);
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+
+                [i,j,val] = find( A );
+                array.A0 = [i,j,val];
+
+                mu = @(x) (x(1,:)>=0.5).*(x(1,:)<1.0).*(x(2,:)>=0.0).*(x(2,:)<0.5);
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+
+                [i,j,val] = find( A );
+                array.A1 = [i,j,val];
+
+                mu = @(x) (x(1,:)>=0.0).*(x(1,:)<0.5).*(x(2,:)>=0.5).*(x(2,:)<1.0);
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+
+                [i,j,val] = find( A );
+                array.A2 = [i,j,val];
+
+                mu = @(x) 1.0 * (x(1,:)>=0.5).*(x(1,:)<1.0).*(x(2,:)>=0.5).*(x(2,:)<1.0) ;
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+
+                [i,j,val] = find( A );
+                array.A3 = [i,j,val];
+
+            end
+
+            if operator == 'f'
+                mu = @(x) 1.0 * (x(1,:)>=0.5).*(x(1,:)<1.0).*(x(2,:)>=0.5).*(x(2,:)<1.0) ;
+                [ ~, b ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+                array.f0 = b;
+
+            end
+        end
+        
+        if strcmp( 'elliptic_example', considered_model )
+            
+            if operator == 'A'
+                mu = @(x) ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 < 0.01 );
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+                [i,j,val] = find( A );
+                array.A0 = [i,j,val];
+
+                mu = @(x) ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 >= 0.01 );
+                [ A, ~ ] = assembler_poisson( obj.fespace,f,mu,dirichlet_functions,neumann_functions );
+                [i,j,val] = find( A );
+                array.A1 = [i,j,val];
+            end
+            
+            if operator == 'f'
+                mu = 0.0;
+                f = @(x) 0.*x(1,:) + ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 < 0.01 );
+                homogeneous_neumann_functions = @(x) [0;0;0;0];
+                [ ~, b ] = assembler_poisson( obj.fespace, f, mu, dirichlet_functions, homogeneous_neumann_functions );
+                array.f0 = b;
+                
+                ones_neumann_functions   = @(x) [0;0;1;0];
+                f = @(x) 0.*x(1,:);
+                [ ~, b ] = assembler_poisson( obj.fespace, f, mu, dirichlet_functions, ones_neumann_functions );
+                array.f1 = b;
+                
+            end
+        end
+            
+      end
       
     end
 end
