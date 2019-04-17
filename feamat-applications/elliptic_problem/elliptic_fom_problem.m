@@ -110,7 +110,7 @@ classdef elliptic_fom_problem < matlab_fom_problem
         end
       end
       
-      function [array] = build_fom_affine_components( obj, operator )
+      function [array] = build_fom_affine_components( obj, operator, ~ )
 
         considered_model = obj.fem_specifics.model;
 

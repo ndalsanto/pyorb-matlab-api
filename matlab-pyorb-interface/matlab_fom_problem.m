@@ -11,7 +11,7 @@ classdef matlab_fom_problem
          disp('Please call solve_parameter in a child of this class');
       end
       
-      function [] = build_fom_affine_components( ~, ~ )
+      function [] = build_fom_affine_components( ~, ~, ~ )
          disp('Please call build_fom_affine_components in a child of this class');
       end
    

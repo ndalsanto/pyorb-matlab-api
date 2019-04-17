@@ -13,16 +13,5 @@ function [elements] = find_mdeim_elements_fom_specifics( fem_specifics, indices_
     fom_problem = initialize_fom_simulation( fem_specifics );
     
     elements = fom_problem.find_mdeim_elements_fom_specifics( indices_mat );
-    
-%     if strcmp( 'navier_stokes', considered_model )
-%         [fespace_u, ~] = set_ns_simulation( fem_specifics );
-% 
-%         n_nodes_u = size(fespace_u.nodes,1);
-% 
-%         indices_mat_for_scalar_case = indices_mat;
-%         indices_mat_for_scalar_case(:, 1:2) = mod( indices_mat_for_scalar_case(:, 1:2), n_nodes_u );
-%         
-%         elements = find_elements_given_matrix_indices( fespace_u, fespace_u, indices_mat_for_scalar_case );
-%     end
 
 end
