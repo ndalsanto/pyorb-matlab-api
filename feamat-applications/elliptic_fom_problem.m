@@ -42,7 +42,7 @@ classdef elliptic_fom_problem < matlab_fom_problem
         current_model = obj.fem_specifics.model;
 
         mu = obj.build_diffusion( param, current_model );
-        [f, dirichlet_functions, neumann_functions] = build_source_and_bc( param, current_model );
+        [f, dirichlet_functions, neumann_functions] = obj.build_source_and_bc( param );
 
         if strcmp(current_model, 'nonaffine') && strcmp( obj.fem_specifics.use_nonhomogeneous_dirichlet, 'Y' )
             non_hom_dirichlet_functions = @(x) [1;0;0;0];
@@ -59,6 +59,32 @@ classdef elliptic_fom_problem < matlab_fom_problem
         sol.u  = A \ b;
 
       end
+      
+      function [f, dirichlet_functions, neumann_functions] = build_source_and_bc( obj, param )
+
+        current_model = obj.fem_specifics.model;
+          
+        if strcmp( current_model, 'thermal_block' )        
+            dirichlet_functions = @(x) [0;0;0;0];
+            neumann_functions = @(x) [1;0;0;0];
+            f = @(x) 0*x(1,:);
+        end
+
+        if strcmp( current_model, 'nonaffine' )        
+            f = @(x) 0*x(1,:) + 1;
+            dirichlet_functions = @(x) [0;0;0;0];
+            neumann_functions   = @(x) [0;0;0;0];
+        end
+
+        if strcmp( current_model, 'elliptic_example' )
+            f = @(x) 0.*x(1,:) + param(2) * ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 < 0.01 );
+            dirichlet_functions = @(x) [0;0;0;0];
+            neumann_functions   = @(x) [0;0;param(3);0];
+        end
+
+
+    end
+
       
       function mu = build_diffusion( obj, param, current_model )
         if strcmp( current_model, 'elliptic_example' )
@@ -93,7 +119,7 @@ classdef elliptic_fom_problem < matlab_fom_problem
         end
 
         trivial_parameter = zeros( 10 );
-        [f, dirichlet_functions, neumann_functions] = build_source_and_bc( trivial_parameter, considered_model );
+        [f, dirichlet_functions, neumann_functions] = obj.build_source_and_bc( trivial_parameter, considered_model );
         
         if strcmp( 'thermal_block', considered_model )
 
