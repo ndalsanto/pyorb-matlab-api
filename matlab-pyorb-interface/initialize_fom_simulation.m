@@ -19,6 +19,11 @@ function [matlab_fom_problem_instance] = initialize_fom_simulation( fom_specific
         matlab_fom_problem_instance = elliptic_fom_problem;
     end
     
+    if strcmp( fom_specifics.model, 'navier_soktes' )
+        disp( 'I am building the MATLAB fom problem since it does not exist from file ' );
+        matlab_fom_problem_instance = navier_soktes_fom_problem;
+    end
+        
     matlab_fom_problem_instance = set_matlab_fem_simulation( matlab_fom_problem_instance, fom_specifics );
     save( file_name_fom_problem, 'matlab_fom_problem_instance' );
 end

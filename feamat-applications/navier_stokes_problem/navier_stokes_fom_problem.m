@@ -1,8 +1,11 @@
-classdef matlab_fom_problem
-   properties
-
-   end
-   methods
+classdef navier_stokes_fom_problem < matlab_fom_problem
+    properties
+        fespace_u
+        mesh_p
+        fem_specifics
+    end
+    
+    methods
       function obj = set_matlab_fem_simulation( obj, ~ )
          disp('Please call set_matlab_fem_simulation in a child of this class');
       end
