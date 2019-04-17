@@ -164,7 +164,52 @@ classdef elliptic_fom_problem < matlab_fom_problem
             
       end
       
+      function [array] = assemble_fom_matrix( obj, param, varargin )
+
+        disp( 'The number of arguments in assemble_fom_matrix for elliptic problem is ' )
+        disp( nargin )
+
+        dirichlet_functions = @(x) [0;0;0;0];
+        neumann_functions = @(x) [1;0;0;0];
+
+        % forcing term (not employed)
+        f = @(x) 0*x(1,:);
+
+        current_model = obj.fem_specifics.model;
+
+        mu = obj.build_diffusion( param, current_model );
+
+        if nargin < 4
+            [ A, ~ ] = assembler_poisson( obj.fespace, f, mu,dirichlet_functions, neumann_functions );
+        else
+            element_list = varargin{1};
+            [ A, ~ ] = assembler_poisson( obj.fespace, f, mu,dirichlet_functions, neumann_functions, element_list );
+        end
+
+        if nargin < 4
+           [ i, j, val ] = find( A );
+           array.A = [ i, j, val ];
+        end
+        if nargin >= 4
+            indeces_list = varargin{2}; % supposed to be a matrix of size nb_of_indices x 2 
+            elements_A = zeros( size( indeces_list, 1 ), 1 );
+            for ii = 1:size( indeces_list , 1 )
+                elements_A(ii) = A(indeces_list(ii, 1), indeces_list(ii, 2));
+            end
+
+            array.A = [indeces_list, elements_A];
+        end
+      end
+      
+    function [array] = assemble_fom_rhs( obj, param, varargin )
+        if nargin < 4
+            array = assemble_elliptic_fom_rhs( obj, param );
+        end
+        if nargin >= 4
+            array = assemble_elliptic_fom_rhs( obj, param, varargin{1}, varargin{2} );
+        end
     end
+  end
 end
 
 
