@@ -7,7 +7,7 @@ classdef matlab_fom_problem
          disp('Please call a child of this class');
       end
       
-     function [] = solve_parameter( ~ )
+      function [] = solve_parameter( ~ )
          disp('Please call a child of this class');
       end
 end

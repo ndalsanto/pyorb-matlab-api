@@ -8,7 +8,7 @@ classdef elliptic_fom_problem < matlab_fom_problem
     
     methods
       function [obj] = set_matlab_fem_simulation( obj, fem_specifics )
-        
+
         disp( 'Initializing FEM elliptic problem' )
         
         obj.fem_specifics = fem_specifics;
@@ -41,7 +41,7 @@ classdef elliptic_fom_problem < matlab_fom_problem
         
         current_model = obj.fem_specifics.model;
 
-        mu = build_diffusion( param, current_model );
+        mu = obj.build_diffusion( param, current_model );
         [f, dirichlet_functions, neumann_functions] = build_source_and_bc( param, current_model );
 
         if strcmp(current_model, 'nonaffine') && strcmp( obj.fem_specifics.use_nonhomogeneous_dirichlet, 'Y' )
@@ -59,6 +59,30 @@ classdef elliptic_fom_problem < matlab_fom_problem
         sol.u  = A \ b;
 
       end
+      
+      function mu = build_diffusion( obj, param, current_model )
+        if strcmp( current_model, 'elliptic_example' )
+            mu = @(x) ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 < 0.01 ) ...
+                      + param(1) * ( (x(1,:)-0.5).^2 + (x(2,:)-0.5).^2 >= 0.01 );
+            return 
+        end
+
+        if strcmp( current_model, 'thermal_block' ) || strcmp( current_model, 'nonaffine_thermal_block')
+            mu = @(x) param(1)*(x(1,:)<0.5).*(x(2,:)<0.5) ...
+            + param(2)*(x(1,:)>=0.5).*(x(1,:)<1.0).*(x(2,:)>=0.0).*(x(2,:)<0.5) ...
+            + param(3)*(x(1,:)>=0.0).*(x(1,:)<0.5).*(x(2,:)>=0.5).*(x(2,:)<1.0) ...
+            + 1.0 * (x(1,:)>=0.5).*(x(1,:)<1.0).*(x(2,:)>=0.5).*(x(2,:)<1.0) ;
+            return 
+        end
+
+        if strcmp( current_model, 'nonaffine' )
+            mu = @(x) 1. * ( param(3) + ( 1. / param(3) ) ... 
+               * exp( - ( ( x(1,:)-param(1) ) .* ( x(1,:)-param(1) ) ...
+                        + ( x(2,:)-param(2) ) .* ( x(2,:)-param(2) ) ) / param(3) ) );
+
+            return 
+        end
+    end
       
     end
 end
