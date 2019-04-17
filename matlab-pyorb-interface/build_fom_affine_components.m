@@ -6,9 +6,6 @@ function [array] = build_fom_affine_components( operator, fem_specifics )
 %           mesh, the fespace and the chosen model
 % output=
 %           array: struct containing the affine stiffness matrices in COO format
-    
-
-    disp('Building affine FOM components from MATLAB pyorb interface')
 
     fom_problem = initialize_fom_simulation( fem_specifics );
     

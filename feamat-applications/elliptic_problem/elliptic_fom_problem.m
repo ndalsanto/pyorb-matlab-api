@@ -10,7 +10,6 @@ classdef elliptic_fom_problem < matlab_fom_problem
       function [obj] = set_matlab_fem_simulation( obj, fem_specifics )
 
         disp( 'Initializing FEM elliptic problem' )
-        
         obj.fem_specifics = fem_specifics;
         
         n_elements_x = fem_specifics.number_of_elements;
@@ -191,9 +190,6 @@ classdef elliptic_fom_problem < matlab_fom_problem
       end
       
       function [array] = assemble_fom_matrix( obj, param, varargin )
-
-        disp( 'The number of arguments in assemble_fom_matrix for elliptic problem is ' )
-        disp( nargin )
 
         dirichlet_functions = @(x) [0;0;0;0];
         neumann_functions = @(x) [1;0;0;0];

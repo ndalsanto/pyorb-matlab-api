@@ -4,7 +4,6 @@ lifting_name = strcat( lifting_name, '_stokes_lifting.mat' );
 file_already_exists = exist( lifting_name, 'file');
 
 if file_already_exists == 2
-    % disp('Loading the lifting from file')
     load( lifting_name, '-mat', 'u_lifting_stokes' );
 else
     f = [0; 0];

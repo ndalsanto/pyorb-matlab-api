@@ -7,9 +7,6 @@ function [array] = assemble_fom_rhs( param, fem_specifics, varargin )
 % output=
 %           array: struct containing the stiffness matrix in COO format
 
-    disp('Assemble FOM rhs from MATLAB pyorb interface')
-    disp( nargin )
-    
     fom_problem = initialize_fom_simulation( fem_specifics );
     
     if nargin < 4

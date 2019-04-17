@@ -8,7 +8,6 @@ function elements = find_elements_for_deim_fom_specifics( fem_specifics, indices
 % output=
 %           elements: array of elements
 
-    disp('Finding DEIM elements from MATLAB pyorb interface')
     fom_problem = initialize_fom_simulation( fem_specifics );
     elements = fom_problem.find_elements_for_deim_fom_specifics( indices );
 

@@ -1,6 +1,5 @@
 function [array] = assemble_elliptic_fom_rhs( elliptic_problem, param, varargin )
 
-    % forcing term
     f = @(x) 0*x(1,:);
 
     current_model = elliptic_problem.fem_specifics.model;

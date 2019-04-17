@@ -181,10 +181,7 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
       end
       
       function [array] = assemble_fom_rhs( obj, param, varargin )
-        
-        disp( 'assemble_fom_rhs in ns_problem_fom' )
-        disp( nargin )
-          
+                  
         if nargin < 4
           array = assemble_ns_fom_rhs( obj, param );
         end

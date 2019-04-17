@@ -7,10 +7,7 @@ function [sol] = solve_parameter( param, fem_specifics )
 % output=
 %           sol: struct containing the solution
 
-    disp('Solving FOM problem from MATLAB pyorb interface')
-
-    fom_problem = initialize_fom_simulation( fem_specifics );
-    
+    fom_problem = initialize_fom_simulation( fem_specifics );    
     sol = fom_problem.solve_parameter( param );
     
 end
