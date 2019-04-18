@@ -75,7 +75,7 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
         sol.u = [ns_sol.u1; ns_sol.u2];
         
       end
-      
+
       function [array] = build_fom_affine_components( obj, operator, fem_specifics )
 
         n_nodes_u = size( obj.fespace_u.nodes, 1 );
@@ -105,7 +105,7 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
             [i,j,val] = find( A_stokes(1:2*n_nodes_u, 1:2*n_nodes_u) );
             array.A1 = [i,j,val];
 
-            for iB = 1:obj.fem_specifics.range_rb_functions
+            for iB = 1:fem_specifics.range_rb_functions
                 
                 disp( strcat('Considering RB function - ', num2str(iB) ) );
 
@@ -118,7 +118,7 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
             end
             
             % needed when building the Jacobian
-            for iB = 1:obj.fem_specifics.range_rb_functions
+            for iB = 1:fem_specifics.range_rb_functions
                 
                 disp( strcat('Considering RB function with flipped term - ', num2str(iB) ) );
 
@@ -127,7 +127,7 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
                 C_1 = add_flipped_convective_term( C_1, pyorb_u, obj.fespace_u );
 
                 [i,j,val] = find( C_1(1:2*n_nodes_u, 1:2*n_nodes_u) );
-                array.("A" + num2str( obj.fem_specifics.range_rb_functions+iB+1) ) = [i,j,val];
+                array.("A" + num2str( fem_specifics.range_rb_functions+iB+1) ) = [i,j,val];
             end
 
             disp( 'Finished to build fom NS affine components ' );

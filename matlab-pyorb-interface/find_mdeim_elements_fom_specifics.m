@@ -8,7 +8,7 @@ function [elements] = find_mdeim_elements_fom_specifics( fem_specifics, indices_
 % output=
 %           elements: array of elements
 
-    fom_problem = initialize_fom_simulation( fem_specifics );    
+    fom_problem = load_fom_problem( fem_specifics );    
     elements = fom_problem.find_mdeim_elements_fom_specifics( indices_mat );
 
 end

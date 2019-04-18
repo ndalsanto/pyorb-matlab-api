@@ -7,7 +7,7 @@ function [array] = build_fom_affine_components( operator, fem_specifics )
 % output=
 %           array: struct containing the affine stiffness matrices in COO format
 
-    fom_problem = initialize_fom_simulation( fem_specifics );
+    fom_problem = load_fom_problem( fem_specifics );
     
     array = fom_problem.build_fom_affine_components( operator, fem_specifics );
 end

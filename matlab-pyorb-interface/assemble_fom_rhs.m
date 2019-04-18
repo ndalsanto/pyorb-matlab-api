@@ -7,7 +7,7 @@ function [array] = assemble_fom_rhs( param, fem_specifics, varargin )
 % output=
 %           array: struct containing the stiffness matrix in COO format
 
-    fom_problem = initialize_fom_simulation( fem_specifics );
+    fom_problem = load_fom_problem( fem_specifics );
     
     if nargin < 4
         array = fom_problem.assemble_fom_rhs( param );

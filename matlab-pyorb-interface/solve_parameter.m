@@ -7,7 +7,7 @@ function [sol] = solve_parameter( param, fem_specifics )
 % output=
 %           sol: struct containing the solution
 
-    fom_problem = initialize_fom_simulation( fem_specifics );    
+    fom_problem = load_fom_problem( fem_specifics );    
     sol = fom_problem.solve_parameter( param );
     
 end
