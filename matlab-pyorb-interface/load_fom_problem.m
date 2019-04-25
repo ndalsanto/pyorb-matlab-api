@@ -13,7 +13,5 @@ function [matlab_fom_problem_instance] = load_fom_problem( fom_specifics )
         load( file_name_fom_problem, '-mat', 'matlab_fom_problem_instance' );
         return
     end
-    
-%     matlab_fom_problem_instance = initialize_fom_simulation( fom_specifics );
-    
+        
 end

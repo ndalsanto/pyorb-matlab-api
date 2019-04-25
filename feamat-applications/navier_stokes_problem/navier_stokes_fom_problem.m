@@ -76,6 +76,22 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
         
       end
 
+      function [array] = assemble_fom_natural_norm_matrix( obj )
+        
+        n_nodes_u = size( obj.fespace_u.nodes, 1 );
+        n_nodes_p = size( obj.fespace_p.nodes, 1 );
+        f = [0; 0];
+        dirichlet_stokes_functions    = @(x) [0 0;0 0;0 0;0 0;0 0;0 0]';
+        neumann_functions             = @(x) [0 0;0 0;0 0;0 0;0 0;0 0]';
+
+        [A_stokes, ~] = assembler_steady_stokes( obj.fespace_u, obj.fespace_p, f, 1., dirichlet_stokes_functions, ...
+                                                 neumann_functions);
+
+        [i,j,val] = find( A_stokes(1:2*n_nodes_u, 1:2*n_nodes_u) );
+        array.A = [i,j,val];
+        
+      end
+
       function [array] = build_fom_affine_components( obj, operator, fem_specifics )
 
         n_nodes_u = size( obj.fespace_u.nodes, 1 );
