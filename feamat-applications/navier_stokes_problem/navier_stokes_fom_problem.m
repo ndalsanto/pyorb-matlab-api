@@ -78,8 +78,8 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
 
       function [array] = assemble_fom_natural_norm_matrix( obj )
         
-        n_nodes_u = size( obj.fespace_u.nodes, 1 );
-        n_nodes_p = size( obj.fespace_p.nodes, 1 );
+        n_nodes_u = size(obj.fespace_u.nodes,1);
+
         f = [0; 0];
         dirichlet_stokes_functions    = @(x) [0 0;0 0;0 0;0 0;0 0;0 0]';
         neumann_functions             = @(x) [0 0;0 0;0 0;0 0;0 0;0 0]';
@@ -184,7 +184,57 @@ classdef navier_stokes_fom_problem < matlab_fom_problem
         end
 
       end
-   
+
+      function [array] = build_rb_affine_components( obj, operator, fem_specifics )
+    
+        fem_array = obj.build_fom_affine_components( operator, fem_specifics );
+
+        N = fem_specifics.range_rb_functions;
+        n_nodes_u = size( obj.fespace_u.nodes, 1 );
+
+        if operator == 'A'
+
+          for iQa = 0:2*N+1
+            AN = zeros( N, N );
+
+            Aq_coo = fem_array.( strcat("A", num2str(iQa)) );
+            Aq = sparse( Aq_coo(:, 1), Aq_coo(:, 2), Aq_coo(:, 3), 2*n_nodes_u, 2*n_nodes_u );
+
+            for iB = 1:N
+
+              pyorb_iBu = fem_specifics.("rb_func_" + num2str(iB-1))';
+
+              for jB = 1:N
+
+                pyorb_jBu = fem_specifics.("rb_func_" + num2str(jB-1))';
+
+                AN(iB, jB) = pyorb_iBu' * Aq * pyorb_jBu;
+
+              end
+            end
+
+            array.("AN" + num2str(iQa) ) = AN;
+          end
+        end
+
+        if operator == 'f'
+
+          for iQf = 0:1
+            fN = zeros( N, 1 );
+
+            for iB = 1:N
+              pyorb_iBu = fem_specifics.("rb_func_" + num2str(iB-1))';
+              fN( iB ) = pyorb_iBu' * fem_array.("f" + num2str(iQf) );
+            end
+
+            array.("fN" + num2str(iQf) ) = fN;
+
+          end
+
+        end
+
+      end
+
       function [array] = assemble_fom_matrix( obj, param, varargin )
          
         if nargin < 4
