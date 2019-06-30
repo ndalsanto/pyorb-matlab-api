@@ -58,7 +58,20 @@ classdef elliptic_fom_problem < matlab_fom_problem
         sol.u  = A \ b;
 
       end
-      
+
+
+      function [array] = assemble_fom_natural_norm_matrix( obj )
+
+        f = @(x) 0.*x(1,:);
+        dirichlet_functions = @(x) [0;0;0;0];
+        neumann_functions   = @(x) [0;0;0;0];
+
+        [ A, b ] = assembler_poisson( obj.fespace, f, 1, dirichlet_functions, neumann_functions );
+        [i,j,val] = find( A );
+        array.A = [i,j,val];
+
+      end
+
       function [f, dirichlet_functions, neumann_functions] = build_source_and_bc( obj, param )
 
         current_model = obj.fem_specifics.model;
